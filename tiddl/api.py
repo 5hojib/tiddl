@@ -1,17 +1,22 @@
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
+
 from requests import Session
 
-from .types import (
-    SessionResponse,
-    TrackQuality,
-    Track,
-    TrackStream,
-    AristAlbumsItems,
-    Album,
-    AlbumItems,
-    Playlist,
-    PlaylistItems,
-)
+if TYPE_CHECKING:
+    from .types import (
+        Album,
+        Track,
+        Playlist,
+        AlbumItems,
+        TrackStream,
+        TrackQuality,
+        PlaylistItems,
+        SessionResponse,
+        AristAlbumsItems,
+    )
 
 API_URL = "https://api.tidal.com/v1"
 
@@ -26,7 +31,9 @@ class TidalApi:
         self._session.headers = {"authorization": f"Bearer {token}"}
         self._logger = logging.getLogger("TidalApi")
 
-    def _request(self, endpoint: str, params={}):
+    def _request(self, endpoint: str, params=None):
+        if params is None:
+            params = {}
         self._logger.debug(f"{endpoint} {params}")
         req = self._session.request(
             method="GET", url=f"{API_URL}/{endpoint}", params=params
@@ -38,7 +45,7 @@ class TidalApi:
 
     def getSession(self) -> SessionResponse:
         return self._request(
-            f"sessions",
+            "sessions",
         )
 
     def getTrackStream(self, id: str | int, quality: TrackQuality) -> TrackStream:

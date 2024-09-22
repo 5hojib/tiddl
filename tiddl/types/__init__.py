@@ -1,4 +1,6 @@
-from typing import TypedDict, Literal
+from __future__ import annotations
+
+from typing import Literal, TypedDict
 
 from .api import *
 from .track import *

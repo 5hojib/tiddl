@@ -1,23 +1,26 @@
+from __future__ import annotations
+
 import os
+import sys
 import time
 import logging
 from random import randint
 
 from .api import TidalApi
-from .auth import getDeviceAuth, getToken, refreshToken
-from .config import Config, HOME_DIRECTORY
-from .download import downloadTrackStream, Cover
-from .parser import QUALITY_ARGS, parser
-from .types import TRACK_QUALITY, TrackQuality, Track
+from .auth import getToken, refreshToken, getDeviceAuth
+from .types import TRACK_QUALITY, Track, TrackQuality
 from .utils import (
     RESOURCE,
     parseURL,
-    formatFilename,
-    loadingSymbol,
+    initLogging,
     setMetadata,
     convertToFlac,
-    initLogging,
+    loadingSymbol,
+    formatFilename,
 )
+from .config import HOME_DIRECTORY, Config
+from .parser import QUALITY_ARGS, parser
+from .download import Cover, downloadTrackStream
 
 SAVE_COVER = True
 
@@ -87,7 +90,7 @@ def main():
                     },
                 }
             )
-            logger.info(f"authenticated!")
+            logger.info("authenticated!")
             break
         else:
             logger.info("time for authentication has expired")
@@ -104,7 +107,7 @@ def main():
                 "token_expires_at": int(time.time()) + token["expires_in"],
             }
         )
-        logger.info(f"refreshed token!")
+        logger.info("refreshed token!")
 
     time_to_expire = config["token_expires_at"] - t_now
     days, hours = time_to_expire // (24 * 3600), time_to_expire % (24 * 3600) // 3600
@@ -146,7 +149,7 @@ def main():
                 time.sleep(sleep_time)
             except KeyboardInterrupt:
                 logger.info("stopping...")
-                exit()
+                sys.exit()
 
         stream = api.getTrackStream(track["id"], track_quality)
         quality = TRACK_QUALITY[stream["audioQuality"]]
@@ -180,7 +183,7 @@ def main():
         try:
             setMetadata(track_path, track, cover_data)
         except ValueError as e:
-            logger.error(f"could not set metadata. {e}")
+            logger.exception(f"could not set metadata. {e}")
 
         logger.info(f"track saved as {track_path}")
 
@@ -222,7 +225,7 @@ def main():
             try:
                 input_type, input_id = parseURL(user_input)
             except ValueError as e:
-                logger.error(e)
+                logger.exception(e)
                 failed_input.append(user_input)
                 continue
 

@@ -1,16 +1,22 @@
-import unittest
-import subprocess
+from __future__ import annotations
+
 import shutil
+import unittest
+import contextlib
+import subprocess
+from typing import TYPE_CHECKING
 
 from .utils import parseURL, formatFilename
-from .types.track import Track
+
+if TYPE_CHECKING:
+    from .types.track import Track
 
 
 class TestUtils(unittest.TestCase):
-
     def test_parseURL(self):
         self.assertEqual(
-            parseURL("https://tidal.com/browse/track/284165609"), ("track", "284165609")
+            parseURL("https://tidal.com/browse/track/284165609"),
+            ("track", "284165609"),
         )
         self.assertEqual(
             parseURL("https://tidal.com/browse/track/284165609/"),
@@ -28,10 +34,12 @@ class TestUtils(unittest.TestCase):
         )
 
         self.assertEqual(
-            parseURL("https://listen.tidal.com/album/284165608"), ("album", "284165608")
+            parseURL("https://listen.tidal.com/album/284165608"),
+            ("album", "284165608"),
         )
         self.assertEqual(
-            parseURL("https://tidal.com/browse/album/284165608"), ("album", "284165608")
+            parseURL("https://tidal.com/browse/album/284165608"),
+            ("album", "284165608"),
         )
         self.assertEqual(
             parseURL("https://tidal.com/browse/album/284165608?u"),
@@ -39,10 +47,12 @@ class TestUtils(unittest.TestCase):
         )
 
         self.assertEqual(
-            parseURL("https://listen.tidal.com/artist/7695548"), ("artist", "7695548")
+            parseURL("https://listen.tidal.com/artist/7695548"),
+            ("artist", "7695548"),
         )
         self.assertEqual(
-            parseURL("https://tidal.com/browse/artist/7695548"), ("artist", "7695548")
+            parseURL("https://tidal.com/browse/artist/7695548"),
+            ("artist", "7695548"),
         )
 
         self.assertEqual(
@@ -167,31 +177,26 @@ DOWNLOAD_DIR = "download_test"
 
 
 class TestTiddl(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
-        try:
+        with contextlib.suppress(FileNotFoundError):
             shutil.rmtree(DOWNLOAD_DIR)
-        except FileNotFoundError:
-            pass
 
     @classmethod
     def tearDownClass(cls):
-        try:
+        with contextlib.suppress(FileNotFoundError):
             shutil.rmtree(DOWNLOAD_DIR)
-        except FileNotFoundError:
-            pass
 
     def test_noInput(self):
-        result = subprocess.run(["tiddl"])
+        result = subprocess.run(["tiddl"], check=False)
         self.assertEqual(result.returncode, 0)
 
     def test_downloadTrack(self):
-        result = subprocess.run(["tiddl", TRACK_ID, "-p", DOWNLOAD_DIR])
+        result = subprocess.run(["tiddl", TRACK_ID, "-p", DOWNLOAD_DIR], check=False)
         self.assertEqual(result.returncode, 0)
 
     def test_downloadTrackExists(self):
-        result = subprocess.run(["tiddl", TRACK_ID, "-p", DOWNLOAD_DIR])
+        result = subprocess.run(["tiddl", TRACK_ID, "-p", DOWNLOAD_DIR], check=False)
         self.assertEqual(result.returncode, 0)
 
 

@@ -1,5 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from requests import request
-from .types.auth import AuthDeviceResponse, AuthResponse, AuthResponseWithRefresh
+
+if TYPE_CHECKING:
+    from .types.auth import AuthResponse, AuthDeviceResponse, AuthResponseWithRefresh
 
 AUTH_URL = "https://auth.tidal.com/v1/oauth2"
 CLIENT_ID = "zU4XHVVkc2tDPo4t"

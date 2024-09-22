@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import json
 import logging
-
+from typing import TYPE_CHECKING, Any, TypedDict
 from pathlib import Path
-from typing import TypedDict, Any
-from .types import TrackQuality
+
+if TYPE_CHECKING:
+    from .types import TrackQuality
 
 
 class Settings(TypedDict, total=False):
@@ -56,7 +59,7 @@ class Config:
         self._logger = logging.getLogger("Config")
 
         try:
-            with open(self.config_path, "r") as f:
+            with open(self.config_path) as f:
                 loaded_config: ConfigData = json.load(f)
                 loaded_settings = loaded_config.get("settings")
                 self._logger.debug(f"loaded {loaded_settings}")

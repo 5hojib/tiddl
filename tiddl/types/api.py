@@ -1,6 +1,9 @@
-from typing import TypedDict, Optional, List, Literal
+from __future__ import annotations
 
-from .track import Track
+from typing import TYPE_CHECKING, Literal, TypedDict
+
+if TYPE_CHECKING:
+    from .track import Track
 
 
 class ErrorResponse(TypedDict):
@@ -13,7 +16,7 @@ class Client(TypedDict):
     id: int
     name: str
     authorizedForOffline: bool
-    authorizedForOfflineDate: Optional[str]
+    authorizedForOfflineDate: str | None
 
 
 class SessionResponse(TypedDict):
@@ -51,21 +54,21 @@ class Album(TypedDict):
     releaseDate: str
     copyright: str
     type: str
-    version: Optional[str]
+    version: str | None
     url: str
     cover: str
-    videoCover: Optional[str]
+    videoCover: str | None
     explicit: bool
     upc: str
     popularity: int
     audioQuality: str
-    audioModes: List[str]
+    audioModes: list[str]
     artist: ArtistAlbum
-    artists: List[ArtistAlbum]
+    artists: list[ArtistAlbum]
 
 
 class AristAlbumsItems(Items):
-    items: List[Album]
+    items: list[Album]
 
 
 class _AlbumTrack(TypedDict):
@@ -74,7 +77,7 @@ class _AlbumTrack(TypedDict):
 
 
 class AlbumItems(Items):
-    items: List[_AlbumTrack]
+    items: list[_AlbumTrack]
 
 
 class _Creator(TypedDict):
@@ -97,7 +100,7 @@ class Playlist(TypedDict):
     image: str
     popularity: int
     squareImage: str
-    promotedArtists: List[ArtistAlbum]
+    promotedArtists: list[ArtistAlbum]
     lastItemAddedAt: str
 
 
@@ -108,4 +111,4 @@ class _PlaylistItem(TypedDict):
 
 
 class PlaylistItems(Items):
-    items: List[_PlaylistItem]
+    items: list[_PlaylistItem]

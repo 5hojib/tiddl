@@ -1,16 +1,19 @@
-import logging
-import requests
-import json
+from __future__ import annotations
+
 import os
-
-from queue import Queue
-from threading import Thread
+import json
+import logging
 from time import time
-from xml.etree.ElementTree import fromstring
+from queue import Queue
 from base64 import b64decode
-from typing import TypedDict, List
+from typing import TYPE_CHECKING, TypedDict
+from threading import Thread
+from xml.etree.ElementTree import fromstring
 
-from .types.track import ManifestMimeType
+import requests
+
+if TYPE_CHECKING:
+    from .types.track import ManifestMimeType
 
 THREADS_COUNT = 4
 
@@ -57,19 +60,21 @@ class Downloader:
 
     def download(self, urls: list[str]) -> bytes:
         self.total = len(urls)
-        indexed_urls = [(i, url) for (i, url) in enumerate(urls)]
+        indexed_urls = list(enumerate(urls))
         threader = Threader(THREADS_COUNT, self._downloadFragment, indexed_urls)
         threader.run()
         sorted_content = sorted(self.indexed_content, key=lambda x: x[0])
-        data = b"".join(content for _, content in sorted_content)
-        return data
+        return b"".join(content for _, content in sorted_content)
 
     def _downloadFragment(self, arg: tuple[int, str]):
         index, url = arg
         req = self.session.get(url)
         self.indexed_content.append((index, req.content))
         showProgressBar(
-            len(self.indexed_content), self.total, "threaded download", show_size=False
+            len(self.indexed_content),
+            self.total,
+            "threaded download",
+            show_size=False,
         )
 
 
@@ -82,7 +87,7 @@ def parseManifest(manifest: str):
         mimeType: str
         codecs: str
         encryptionType: str
-        urls: List[str]
+        urls: list[str]
 
     data: AudioFileInfo = json.loads(manifest)
     return data
@@ -129,7 +134,9 @@ def parseManifestXML(xml_content: str):
     return urls, codecs
 
 
-def showProgressBar(iteration: int, total: int, text: str, length=30, show_size=True):
+def showProgressBar(
+    iteration: int, total: int, text: str, length=30, show_size=True
+):
     SQUARE, SQUARE_FILL = "□", "■"
     iteration_mb = iteration / 1024 / 1024
     total_mb = total / 1024 / 1024
@@ -163,9 +170,7 @@ def download(url: str) -> bytes:
 
 def threadDownload(urls: list[str]) -> bytes:
     dl = Downloader()
-    data = dl.download(urls)
-
-    return data
+    return dl.download(urls)
 
 
 def downloadTrackStream(
@@ -246,7 +251,7 @@ def downloadCover(uid: str, path: str, size=1280):
         with open(file, "wb") as f:
             f.write(req.content)
     except FileNotFoundError as e:
-        logger.error(f"could not save cover. {file} -> {e}")
+        logger.exception(f"could not save cover. {file} -> {e}")
 
 
 class Cover:
@@ -294,4 +299,4 @@ class Cover:
                 logger.debug(file)
                 f.write(self.content)
         except FileNotFoundError as e:
-            logger.error(f"could not save cover. {file} -> {e}")
+            logger.exception(f"could not save cover. {file} -> {e}")

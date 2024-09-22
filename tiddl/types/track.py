@@ -1,5 +1,6 @@
-from typing import TypedDict, Optional, List, Dict, Literal, Optional
+from __future__ import annotations
 
+from typing import Literal, TypedDict
 
 TrackQuality = Literal["LOW", "HIGH", "LOSSLESS", "HI_RES_LOSSLESS"]
 ManifestMimeType = Literal["application/dash+xml", "application/vnd.tidal.bts"]
@@ -17,15 +18,15 @@ class TrackStream(TypedDict):
     albumPeakAmplitude: float
     trackReplayGain: float
     trackPeakAmplitude: float
-    bitDepth: Optional[int]
-    sampleRate: Optional[int]
+    bitDepth: int | None
+    sampleRate: int | None
 
 
 class _Artist(TypedDict):
     id: int
     name: str
     type: str
-    picture: Optional[str]
+    picture: str | None
 
 
 class _Album(TypedDict):
@@ -33,7 +34,7 @@ class _Album(TypedDict):
     title: str
     cover: str
     vibrantColor: str
-    videoCover: Optional[str]
+    videoCover: str | None
 
 
 class Track(TypedDict):
@@ -51,18 +52,18 @@ class Track(TypedDict):
     premiumStreamingOnly: bool
     trackNumber: int
     volumeNumber: int
-    version: Optional[str]
+    version: str | None
     popularity: int
     copyright: str
-    bpm: Optional[int]
+    bpm: int | None
     url: str
     isrc: str
     editable: bool
     explicit: bool
     audioQuality: str
-    audioModes: List[str]
-    mediaMetadata: Dict[str, List[str]]
+    audioModes: list[str]
+    mediaMetadata: dict[str, list[str]]
     artist: _Artist
-    artists: List[_Artist]
+    artists: list[_Artist]
     album: _Album
-    mixes: Dict[str, str]
+    mixes: dict[str, str]

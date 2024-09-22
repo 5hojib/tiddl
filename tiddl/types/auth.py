@@ -1,29 +1,31 @@
-from typing import TypedDict, Optional
+from __future__ import annotations
+
+from typing import TypedDict
 
 
 class _User(TypedDict):
     userId: int
     email: str
     countryCode: str
-    fullName: Optional[str]
-    firstName: Optional[str]
-    lastName: Optional[str]
-    nickname: Optional[str]
+    fullName: str | None
+    firstName: str | None
+    lastName: str | None
+    nickname: str | None
     username: str
-    address: Optional[str]
-    city: Optional[str]
-    postalcode: Optional[str]
-    usState: Optional[str]
-    phoneNumber: Optional[str]
-    birthday: Optional[str]
+    address: str | None
+    city: str | None
+    postalcode: str | None
+    usState: str | None
+    phoneNumber: str | None
+    birthday: str | None
     channelId: int
     parentId: int
     acceptedEULA: bool
     created: int
     updated: int
     facebookUid: int
-    appleUid: Optional[str]
-    googleUid: Optional[str]
+    appleUid: str | None
+    googleUid: str | None
     accountLinkCreated: bool
     emailVerified: bool
     newUser: bool

@@ -1,16 +1,20 @@
-import re
+from __future__ import annotations
+
 import os
+import re
 import logging
 import subprocess
+from typing import TYPE_CHECKING, Literal, TypedDict, get_args
 
-from typing import TypedDict, Literal, List, get_args
-from mutagen.flac import FLAC as MutagenFLAC, Picture
+from mutagen.flac import FLAC as MutagenFLAC
+from mutagen.flac import Picture
 from mutagen.easymp4 import EasyMP4 as MutagenMP4
 
-from .types.track import Track
+if TYPE_CHECKING:
+    from .types.track import Track
 
 RESOURCE = Literal["track", "album", "artist", "playlist"]
-RESOURCE_LIST: List[RESOURCE] = list(get_args(RESOURCE))
+RESOURCE_LIST: list[RESOURCE] = list(get_args(RESOURCE))
 
 
 logger = logging.getLogger("utils")
@@ -72,18 +76,14 @@ def sanitizeDirName(dir_name: str):
     # replace invalid characters with an underscore
     sanitized = re.sub(r'[<>:"|?*]', "_", dir_name)
     # strip whitespace
-    sanitized = sanitized.strip()
-
-    return sanitized
+    return sanitized.strip()
 
 
 def sanitizeFileName(file_name: str):
     # replace invalid characters with an underscore
     sanitized = re.sub(r'[<>:"|?*/\\]', "_", file_name)
     # strip whitespace
-    sanitized = sanitized.strip()
-
-    return sanitized
+    return sanitized.strip()
 
 
 def loadingSymbol(i: int, text: str):
@@ -124,7 +124,7 @@ def setMetadata(file_path: str, track: Track, cover_data=b""):
     try:
         metadata.update(new_metadata)
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
         return
 
     metadata.save()
@@ -142,7 +142,7 @@ def convertToFlac(source_path: str, remove_source=True):
     logger.debug(f"converting `{source_path}` to FLAC")
     command = ["ffmpeg", "-i", source_path, dest_path]
     result = subprocess.run(
-        command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
     )
 
     if result.returncode != 0:

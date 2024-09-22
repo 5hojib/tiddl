@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import os
 import argparse
+from typing import TYPE_CHECKING
 
 from .types import TRACK_QUALITY
-from .types.track import TrackQuality
+
+if TYPE_CHECKING:
+    from .types.track import TrackQuality
 
 
 def shouldNotColor() -> bool:
