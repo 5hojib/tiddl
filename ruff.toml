@@ -1,0 +1,35 @@
+fix = true
+unsafe-fixes = true
+line-length = 85
+target-version = "py312"
+
+[lint.isort]
+length-sort = true
+required-imports = ["from __future__ import annotations"]
+
+[lint]
+select = [
+    "FURB", # refurb
+    "I",    # isort
+    "W",    # pycodestyle: warning
+    "UP",   # pyupgrade
+    "F",    # pyflakes
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "C4",   # flake8-comprehensions
+    "PERF", # perflint
+    "RUF",  # ruff
+    "TID",  # flake8-tidy-imports
+    "TCH",  # flake8-type-checking
+    "FA",   # flake8-future-annotations
+    "PL",   # pylint
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-pathlib
+    "N",    # flake8-bugbear (naming)
+    "B",    # flake8-bugbear (bugbear)
+    "TRY",  # flake8-tryceratops
+    "FLY",  # flake8-pyflakes
+]
+ignore = [
+    "PLR2004", # pylint rule
+]
